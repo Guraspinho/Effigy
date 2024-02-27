@@ -1,16 +1,47 @@
-const { UnauthenticatedError, BadRequestError} = require("../errors/everyError")
+const { UnauthenticatedError, BadRequestError} = require("../errors/everyError");
 const User = require('../models/users');
 const {StatusCodes} = require('http-status-codes');
+const {sendEmail, createRandomNumber} = require('../services/nodeMailer');
 
 
 
 
 const signup = async (req,res) =>
 {
+    const {email} = req.body;
+    
+    const randomNumber = createRandomNumber();
+    
+    await sendEmail(email, randomNumber);
+    
+    
     const user = await User.create({...req.body});
     const token = user.createJWT();
-    res.status(StatusCodes.CREATED).json({user:{username:user.username}, msg:'Signup Suecessful',token})
+    res.status(StatusCodes.CREATED).json({user:{username:user.username}, msg:'Signup Suecessful',token});
+    return randomNumber;
 }
+
+// confirm email whenn signing up
+
+const confirmEmail = async (req,res) =>
+{
+    const {code} = req.body;
+    const randomNumberFromSignup = await signup(req, res);
+
+    if(!code)
+    {
+        throw new BadRequestError('Please provide Email confirmation code');
+    }
+     
+    if(code !== randomNumberFromSignup)
+    {
+        throw new UnauthenticatedError('Email confirmation code is incorrect');
+    }
+
+    res.send('email confirmed');
+}
+
+
 
 const login = async (req,res) =>
 {
@@ -47,6 +78,7 @@ const login = async (req,res) =>
 }
 
 
+
 // Get login and signup pages
 
 const loginPage = async (req,res) =>
@@ -67,5 +99,7 @@ module.exports =
     loginPage,
     signupPage,
     login,
-    signup
+    signup,
+    confirmEmail,
+    
 };

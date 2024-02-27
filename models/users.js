@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { boolean } = require('joi');
 
 
 const userSchema = mongoose.Schema(
@@ -27,6 +28,11 @@ const userSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please provide password'],
             minlength: 8
+        },
+        confirmed:
+        {
+            type: Boolean,
+            default: false
         }
     })
 
@@ -52,5 +58,7 @@ const userSchema = mongoose.Schema(
         const isMatch = await bcrypt.compare(candidatePassword,this.password);
         return isMatch
     }
+
+
 
     module.exports = mongoose.model('User',userSchema);
