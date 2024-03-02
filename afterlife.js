@@ -8,9 +8,14 @@ const helmet = require('helmet');
 const xssClean = require('xss-clean');
 const rateLimiter = require('express-rate-limit');
 
+// routes
 const authRouter = require('./routes/auth');
+const loginRouter = require('./routes/login');
+
+//middlewares
 const notFound = require('./middlewares/notFound');
 const errorHandlerMiddleware = require('./middlewares/errorHandler');
+const authenticationMiddleware = require('./middlewares/authentication');
 
 
 const app = express();
@@ -38,11 +43,12 @@ app.use(xssClean());
 
 app.get('/', (req,res) =>
 {
-
+    res.send('zd all')
 });
 
 // routes
 app.use('/users',authRouter);
+app.use('/users',authenticationMiddleware,loginRouter);
 
 // error middlewares
 app.use(notFound);

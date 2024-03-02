@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { boolean } = require('joi');
 
 
 const userSchema = mongoose.Schema(
@@ -37,28 +36,37 @@ const userSchema = mongoose.Schema(
     })
 
 
-    // generate JWT
-    userSchema.methods.createJWT = function()
-    {
-        return jwt.sign({userID: this._id, username: this.username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
-    }
-
-    // encrypt the password
-
-    userSchema.pre('save', async function()
-    {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password,salt)
-    })
-
-    // compare provided password to the one that is in the db.
-
-    userSchema.methods.comparePasswords = async function(candidatePassword)
-    {
-        const isMatch = await bcrypt.compare(candidatePassword,this.password);
-        return isMatch
-    }
+// generate JWT
+userSchema.methods.createJWT = function()
+{
+    return jwt.sign({userID: this._id, username: this.username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
+}
 
 
+// generate JWT for confirmation
 
-    module.exports = mongoose.model('User',userSchema);
+userSchema.methods.verificationJWT = async function(email)
+{
+    return jwt.sign({userId:this.email}, process.env.JWT_SECRET, {expiresin:process.env.CONFIRMATION_TOKEN_LIFETIME});
+}
+
+
+// encrypt the password
+
+userSchema.pre('save', async function()
+{
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password,salt)
+})
+
+// compare provided password to the one that is in the db.
+
+userSchema.methods.comparePasswords = async function(candidatePassword)
+{
+    const isMatch = await bcrypt.compare(candidatePassword,this.password);
+    return isMatch
+}
+
+
+
+module.exports = mongoose.model('User',userSchema);

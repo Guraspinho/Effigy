@@ -2,20 +2,11 @@ const nodemailer = require('nodemailer');
 
 //email verification
 
-const createRandomNumber = () =>
-{
-    return Math.floor(Math.random() * 9000) + 1000;
-}
 
 
-async function sendEmail(email, code)
+async function sendEmail(email, text)
 {
-    
-    const emailContent = `
-    <h1>Hello dear user</h1>
-    <p>Your verification code is: </p>
-    // ${code};
-    `
+    const emailContent = `<a href="http://localhost:5000/users/confirm/:${encodeURIComponent(text)}"><button>Confirm your email </button></a>`
 
     const transporter = nodemailer.createTransport(
     {
@@ -33,9 +24,8 @@ async function sendEmail(email, code)
     {
         from: ' irakli <effypowered@gmail.com>',
         to: email,
-        subject: 'test email',
+        subject: 'Email Verification',
         html: emailContent
-        
     }
 
     try
@@ -53,10 +43,7 @@ async function sendEmail(email, code)
 
 
 
-
-
 module.exports = 
 {
-    sendEmail,
-    createRandomNumber
+    sendEmail
 }

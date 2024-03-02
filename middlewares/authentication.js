@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const {StatusCodes} = require('http-status-codes');
-const {unauthenticatedError} = require('../errors/errors');
+const {UnauthenticatedError} = require('../errors/everyError')
 
 const auth = async (req,res,next,) =>
 {
@@ -8,7 +8,7 @@ const auth = async (req,res,next,) =>
 
     if(!authHeader || authHeader.startsWith('Bearer'))
     {
-        throw new unauthenticatedError('Authentication invalid');
+        throw new UnauthenticatedError('Authentication invalid');
     }
     const token = authHeader.split(' ')[1];
 
@@ -20,6 +20,8 @@ const auth = async (req,res,next,) =>
     }
     catch (error)
     {
-        throw new unauthenticatedError('Authentication invalid');       
+        throw new UnauthenticatedError('Authentication invalid');       
     }
 }
+
+module.exports = auth;
