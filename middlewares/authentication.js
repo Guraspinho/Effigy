@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken');
-const {StatusCodes} = require('http-status-codes');
 const {UnauthenticatedError} = require('../errors/everyError')
 
 const auth = async (req,res,next,) =>
 {
     const authHeader = req.headers.authorization;
 
-    if(!authHeader || authHeader.startsWith('Bearer'))
-    {
+    if(!authHeader || !authHeader.startsWith('Bearer '))
+    {   
         throw new UnauthenticatedError('Authentication invalid');
     }
     const token = authHeader.split(' ')[1];
@@ -20,7 +19,7 @@ const auth = async (req,res,next,) =>
     }
     catch (error)
     {
-        throw new UnauthenticatedError('Authentication invalid');       
+        throw new UnauthenticatedError('Authenticatio invalid');       
     }
 }
 
