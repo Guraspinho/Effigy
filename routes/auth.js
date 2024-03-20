@@ -8,4 +8,4 @@ router.route('/confirm/:id').get(confirmEmail);
 router.route('/login').post(login);
 
 
-module.exports = router;
+module.exports = router;    

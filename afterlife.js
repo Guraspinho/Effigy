@@ -10,6 +10,7 @@ const rateLimiter = require('express-rate-limit');
 
 // routes
 const authRouter = require('./routes/auth');
+const credentialsRouter = require('./routes/credentials');
 
 //middlewares
 const notFound = require('./middlewares/notFound');
@@ -42,11 +43,12 @@ app.use(xssClean());
 
 app.get('/', (req,res) =>
 {
-    res.send('zd all')
+    res.send('Effigy')
 });
 
 // routes
 app.use('/users',authRouter);
+app.use('/settings',authenticationMiddleware,credentialsRouter);
 
 
 // error middlewares

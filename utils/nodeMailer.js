@@ -2,11 +2,15 @@ const nodemailer = require('nodemailer');
 
 //email verification
 
-
-
 async function sendEmail(email, text)
 {
-    const emailContent = `<a href="http://localhost:5000/users/confirm/:${encodeURIComponent(text)}"><button>Confirm your email </button></a>`
+    const emailContent = `
+    <h3>Welcome! You've signed up at Effigy.</h3>
+    <h1></h1>
+    <a href="http://localhost:5000/users/confirm/:${encodeURIComponent(text)}"><button>Confirm your email </button></a>
+    <h1></h1>
+    <p>Please validate your email address by clicking the above button. The link remains valid for 24 hours.</p>
+    `
 
     const transporter = nodemailer.createTransport(
     {
@@ -22,7 +26,7 @@ async function sendEmail(email, text)
 
     const emailOptions = 
     {
-        from: ' irakli <effypowered@gmail.com>',
+        from: ' Effigy <effypowered@gmail.com>',
         to: email,
         subject: 'Email Verification',
         html: emailContent
