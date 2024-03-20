@@ -14,7 +14,7 @@ const auth = async (req,res,next,) =>
     try
     {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = {userId: payload.userId, username:payload.username};
+        req.user = {userId: payload.userID, username:payload.username};
         next();    
     }
     catch (error)

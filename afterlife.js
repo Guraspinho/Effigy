@@ -10,7 +10,6 @@ const rateLimiter = require('express-rate-limit');
 
 // routes
 const authRouter = require('./routes/auth');
-const loginRouter = require('./routes/login');
 
 //middlewares
 const notFound = require('./middlewares/notFound');
@@ -48,7 +47,7 @@ app.get('/', (req,res) =>
 
 // routes
 app.use('/users',authRouter);
-app.use('/users',authenticationMiddleware,loginRouter);
+
 
 // error middlewares
 app.use(notFound);

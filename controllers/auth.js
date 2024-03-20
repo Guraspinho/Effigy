@@ -1,9 +1,8 @@
-const { UnauthenticatedError, BadRequestError} = require("../errors/everyError");
+const { UnauthenticatedError, BadRequestError, NotFoundError} = require("../errors/everyError");
 const User = require('../models/users');
 const {StatusCodes} = require('http-status-codes');
 const {sendEmail} = require('../utils/nodeMailer');
-
-
+const jwt = require('jsonwebtoken');
 
 
 
@@ -23,9 +22,23 @@ const signup = async (req,res) =>
 
 const confirmEmail = async (req,res) => 
 {
-    const token = req.params;
+    const {id} = req.params;
+    const token = id.substring(1);
+
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = {userId: payload.userID, username:payload.username};
+    const _id = req.user.userId;
+
+    const user = await User.findOneAndUpdate( {_id}, {confirmed:true} , {new:true, runValidators:true} );
+
     
-    res.status(StatusCodes.ACCEPTED).json({ user: {msg: 'email confirmation was suecessful'},token});
+    if(!user)
+    {
+        throw new NotFoundError(`No user found with ID: ${_id}`);
+    }
+
+    
+    res.status(StatusCodes.ACCEPTED).json({ user: {msg: 'email confirmation was suecessful'}});
 }
 
 
@@ -53,6 +66,11 @@ const login = async (req,res) =>
         throw new UnauthenticatedError('User with provided email does not exist');
     }
 
+    // checks wether user has their email confirmed or not
+    if(!userCredentials.confirmed)
+    {
+        throw new UnauthenticatedError('You must verify your email in order to log in');
+    }
 
 
     //checks if the password is correct
@@ -75,3 +93,4 @@ module.exports =
     signup,
     confirmEmail,
 };
+

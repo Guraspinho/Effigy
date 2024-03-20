@@ -37,17 +37,10 @@ const userSchema = mongoose.Schema(
 
 
 // generate JWT
+
 userSchema.methods.createJWT = function()
 {
     return jwt.sign({userID: this._id, username: this.username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
-}
-
-
-// generate JWT for confirmation
-
-userSchema.methods.verificationJWT = async function(email)
-{
-    return jwt.sign({userId:this.email}, process.env.JWT_SECRET, {expiresin:process.env.CONFIRMATION_TOKEN_LIFETIME});
 }
 
 
@@ -58,6 +51,7 @@ userSchema.pre('save', async function()
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password,salt)
 })
+
 
 // compare provided password to the one that is in the db.
 
