@@ -32,6 +32,11 @@ const userSchema = mongoose.Schema(
         {
             type: Boolean,
             default: false
+        },
+        loggedIn:
+        {
+            type: Boolean,
+            default: false
         }
     })
 
@@ -48,8 +53,18 @@ userSchema.methods.createJWT = function()
 
 userSchema.pre('save', async function()
 {
-    const salt = await bcrypt.genSalt(10);
-    this.password = bcrypt.hash(this.password,salt)
+    try
+    {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(this.password,salt);
+        this.password = hashedPassword
+
+    }
+    catch (error)
+    {
+        console.error(error);
+    }
+
 })
 
 

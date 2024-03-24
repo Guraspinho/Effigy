@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const {UnauthenticatedError} = require('../errors/everyError')
+const {UnauthenticatedError} = require('../errors/everyError');
+const User = require('../models/users');
 
 const auth = async (req,res,next,) =>
 {
@@ -13,13 +14,24 @@ const auth = async (req,res,next,) =>
 
     try
     {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const payload = await jwt.verify(token, process.env.JWT_SECRET);
         req.user = {userId: payload.userID, username:payload.username};
+        _id = req.user.userId;
+
+        // check if the user is logged in or not 
+        const {loggedIn} = await User.findOne({_id});
+            
+        if(!loggedIn)
+        {
+            throw new UnauthenticatedError('User is not logged in yet');
+        }
+
         next();    
     }
     catch (error)
     {
-        throw new UnauthenticatedError('Authenticatio invalid');       
+        console.error(error);
+        throw new UnauthenticatedError(`Authentication invalid`);       
     }
 }
 

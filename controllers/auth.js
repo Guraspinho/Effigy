@@ -8,7 +8,13 @@ const jwt = require('jsonwebtoken');
 
 const signup = async (req,res) =>
 {   
-    const {email} = req.body;
+    const {email,password} = req.body;
+
+    // checking len of an input password 
+    if(password.length > 32)
+    {
+        throw new BadRequestError('Password must have less than 32 characters');
+    }
 
     const user = await User.create({...req.body});
     
@@ -31,7 +37,7 @@ const confirmEmail = async (req,res) =>
 
     const user = await User.findOneAndUpdate( {_id}, {confirmed:true} , {new:true, runValidators:true} );
 
-    
+    // check if user with such id exists or not.
     if(!user)
     {
         throw new NotFoundError(`No user found with ID: ${_id}`);
@@ -39,6 +45,7 @@ const confirmEmail = async (req,res) =>
 
     
     res.status(StatusCodes.ACCEPTED).json({ user: {msg: 'email confirmation was suecessful'}});
+
 }
 
 
@@ -81,9 +88,31 @@ const login = async (req,res) =>
     }
     const token = userCredentials.createJWT();
 
+    // set user status as logged in
+    await User.findOneAndUpdate( {email}, {loggedIn:true} , {new:true, runValidators:true} );
+
     
     // returns username and jwt
     res.status(StatusCodes.OK).json({username: userCredentials.username,token});
+}
+
+
+// logout
+const logout = async (req,res) =>
+{
+    const _id = req.user.userId;
+
+    const {loggedIn} = await User.findOne({_id});
+
+    // if the user is logged in than it can log out
+
+    if(loggedIn)
+    {
+        await User.findOneAndUpdate( {_id}, {loggedIn:false} , {new:true, runValidators:true} );
+    }
+
+
+    res.status(StatusCodes.OK).json({user:{msg:'Logged out suecessfully'}});
 }
 
 
@@ -92,5 +121,6 @@ module.exports =
     login,
     signup,
     confirmEmail,
+    logout
 };
 

@@ -1,3 +1,5 @@
+// do not forget to update jwt lifetime after 
+
 const express = require('express');
 const connectDB = require('./db/mongo');
 require('dotenv').config();

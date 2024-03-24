@@ -11,10 +11,10 @@ const changePassword = async (req,res) =>
 
     const userCredentials = await User.findOne({_id});
 
-    // checks wether user with provided credentials exist
-    if(!userCredentials)
+    // check if length of a provided password is valid
+    if(newPassword.length < 8 || newPassword.length > 32)
     {
-        throw new UnauthenticatedError('User with provided email does not exist');
+        throw new BadRequestError('Please provide valid password');
     }
 
 
@@ -37,7 +37,7 @@ const changePassword = async (req,res) =>
     const salt = await bcrypt.genSalt(10);
     const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
-    const user = await User.findOneAndUpdate( {_id}, {password:hashedNewPassword} , {new:true, runValidators:true} );
+    await User.findOneAndUpdate( {_id}, {password:hashedNewPassword} , {new:true, runValidators:true} );
     
     res.status(StatusCodes.OK).json({msg: 'Password was changed suecessfully'})
 }
