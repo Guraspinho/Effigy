@@ -39,14 +39,38 @@ const changePassword = async (req,res) =>
 
     await User.findOneAndUpdate( {_id}, {password:hashedNewPassword} , {new:true, runValidators:true} );
     
-    res.status(StatusCodes.OK).json({msg: 'Password was changed suecessfully'})
+    res.status(StatusCodes.OK).json({user:{msg: 'Password was changed suecessfully'}});
+}
+
+const changeUsername = async (req,res) =>
+{
+    const {newUsername} = req.body;
+    const _id = req.user.userId;
+    
+    // check if the user is tryung to add the username that is thhe same as before
+    if(newUsername === req.user.username)
+    {
+        throw new BadRequestError(`Your username is already ${newUsername}`);
+    }
+
+    const userCredentials = await User.findById(_id);
+
+    // Users can only update their usernames once per week
+
+    if (userCredentials.lastUsernameChange && (Date.now() - userCredentials.lastUsernameChange < 7 * 24 * 60 * 60 * 1000))
+    {
+        throw new BadRequestError('You can only change your username once a week.');
+    }
+    
+
+    await User.findOneAndUpdate( {_id}, {username:newUsername} , {new:true, runValidators:true} );
+
+    res.status(StatusCodes.OK).json({user:{msg:'Username was updated suecessfully'}});
 }
 
 module.exports = 
 {
-    changePassword
+    changePassword,
+    changeUsername
 }
 
-// get an id from a token, find user with that id and change its password
-// new password must be different from the old one
-// run validators on new password aswell

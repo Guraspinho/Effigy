@@ -37,8 +37,15 @@ const userSchema = mongoose.Schema(
         {
             type: Boolean,
             default: false
+        },
+        lastUsernameChange:
+        {
+            type: Date,
+            default: Date.now
         }
-    })
+
+    },
+    {timestamps:true});
 
 
 // generate JWT
