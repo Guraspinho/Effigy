@@ -41,8 +41,6 @@ async function sendEmail(email, text)
     {
         console.log(`error sending email ${error}`)    
     }
-    
-
 }
 
 

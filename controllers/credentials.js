@@ -68,9 +68,15 @@ const changeUsername = async (req,res) =>
     res.status(StatusCodes.OK).json({user:{msg:'Username was updated suecessfully'}});
 }
 
+const uploadPfp = async (req,res) =>
+{
+    res.status(StatusCodes.OK).json({user:{msg:'Picture was uploaded suecessfully'}})
+}
+
 module.exports = 
 {
     changePassword,
-    changeUsername
+    changeUsername,
+    uploadPfp
 }
 

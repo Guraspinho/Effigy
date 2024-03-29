@@ -1,4 +1,4 @@
-// do not forget to update jwt lifetime after 
+// do not forget to update jwt lifetime later on
 
 const express = require('express');
 const connectDB = require('./db/mongo');
