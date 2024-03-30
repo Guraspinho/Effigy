@@ -1,5 +1,6 @@
 const { CustomAPIError } = require('../errors/everyError');
 const { StatusCodes } = require('http-status-codes');
+const multer = require('multer');
 
 const errorHandlerMiddleware = (err, req, res, next) =>
 {
@@ -14,6 +15,7 @@ const errorHandlerMiddleware = (err, req, res, next) =>
     // {
     //     return res.status(err.statusCode).json({ msg: err.message });
     // }
+
     if(err.name == 'ValidationError')
     {
         customError.msg = Object.values(err.errors)
@@ -32,6 +34,23 @@ const errorHandlerMiddleware = (err, req, res, next) =>
     {
         customError.msg = `Dublicate value entered for email field, please choose another value`;
         customError.statusCode = StatusCodes.BAD_REQUEST;
+    }
+
+    // multer errors
+    if(err instanceof multer.MulterError)
+    {
+        if(err.code === "LIMIT_FILE_SIZE")
+        {
+            return res.json({user:{msg:"The file you are trying to upload is too big"}});
+        }
+        else if(err.code === "LIMIT_FILE_COUNT")
+        {
+            return res.json({user:{msg:"You are trying to upload too many files"}});
+        }
+        else if(err.code === "LIMIT_UNEXPECTED_FILE")
+        {
+            return res.json({user:{msg:"You can only upload images"}});
+        }
     }
 
     // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });

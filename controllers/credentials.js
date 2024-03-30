@@ -2,6 +2,7 @@ const { UnauthenticatedError, BadRequestError} = require("../errors/everyError")
 const User = require('../models/users');
 const {StatusCodes} = require('http-status-codes');
 const bcrypt = require('bcryptjs');
+const {s3Uploadv3} = require('../utils/multer');
 
 const changePassword = async (req,res) =>
 {
@@ -70,7 +71,18 @@ const changeUsername = async (req,res) =>
 
 const uploadPfp = async (req,res) =>
 {
-    res.status(StatusCodes.OK).json({user:{msg:'Picture was uploaded suecessfully'}})
+    const file = req.files[0];
+    try
+    {
+        const results = await s3Uploadv3(file);
+        console.log(results);
+        res.status(StatusCodes.OK).json({user:{msg:'Profile picture was uploaded suecessfully'}})
+    } 
+    catch (error)
+    {
+        console.log(error)
+    }
+    
 }
 
 module.exports = 
