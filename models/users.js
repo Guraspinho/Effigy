@@ -42,6 +42,11 @@ const userSchema = mongoose.Schema(
         {
             type: Date,
             default: Date.now
+        },
+        profilePicture:
+        {
+            type: String,
+            default: 'https://aiiqitshors.s3.amazonaws.com/pfp%2Fb3ef0734-2e8d-45b1-9929-2bfed5ae1341%20-%20blank-profile-picture.png'
         }
 
     },
@@ -64,7 +69,7 @@ userSchema.pre('save', async function()
     {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(this.password,salt);
-        this.password = hashedPassword
+        this.password = hashedPassword;
 
     }
     catch (error)

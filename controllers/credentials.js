@@ -72,10 +72,12 @@ const changeUsername = async (req,res) =>
 const uploadPfp = async (req,res) =>
 {
     const file = req.files[0];
+    const _id = req.user.userId;
     try
     {
         const results = await s3Uploadv3(file);
-        console.log(results);
+
+        await User.findOneAndUpdate({_id},{profilePicture:results}, {new:true, runValidators:true});
         res.status(StatusCodes.OK).json({user:{msg:'Profile picture was uploaded suecessfully'}})
     } 
     catch (error)
