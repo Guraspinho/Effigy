@@ -3,10 +3,11 @@ const User = require('../models/users');
 const {StatusCodes} = require('http-status-codes');
 const {sendEmail} = require('../utils/nodeMailer');
 const jwt = require('jsonwebtoken');
+const asyncWrapper = require('../middlewares/asyncWrapper');
 
 
 
-const signup = async (req,res) =>
+const signup = asyncWrapper(async (req,res) =>
 {   
     const {email,password} = req.body;
 
@@ -22,11 +23,11 @@ const signup = async (req,res) =>
     await sendEmail(email,token);
     res.status(StatusCodes.CREATED).json({user:{username:user.username}, msg:'Signup Suecessful', sugnup:'Please verify your Email'});
   
-};
+});
 
 // confirm email whenn signing up
 
-const confirmEmail = async (req,res) => 
+const confirmEmail = asyncWrapper(async (req,res) => 
 {
     const {id} = req.params;
     const token = id.substring(1);
@@ -46,11 +47,11 @@ const confirmEmail = async (req,res) =>
     
     res.status(StatusCodes.ACCEPTED).json({ user: {msg: 'email confirmation was suecessful'}});
 
-}
+});
 
 
 
-const login = async (req,res) =>
+const login = asyncWrapper(async (req,res) =>
 {
 
     // checking for errors in a controller
@@ -94,11 +95,11 @@ const login = async (req,res) =>
     
     // returns username and jwt
     res.status(StatusCodes.OK).json({username: userCredentials.username,token});
-}
+});
 
 
 // logout
-const logout = async (req,res) =>
+const logout = asyncWrapper(async (req,res) =>
 {
     const _id = req.user.userId;
 
@@ -113,7 +114,7 @@ const logout = async (req,res) =>
 
 
     res.status(StatusCodes.OK).json({user:{msg:'Logged out suecessfully'}});
-}
+});
 
 
 module.exports = 

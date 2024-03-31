@@ -3,8 +3,9 @@ const User = require('../models/users');
 const {StatusCodes} = require('http-status-codes');
 const bcrypt = require('bcryptjs');
 const {s3Uploadv3} = require('../utils/multer');
+const asyncWrapper = require('../middlewares/asyncWrapper');
 
-const changePassword = async (req,res) =>
+const changePassword = asyncWrapper(async (req,res) =>
 {
     const {oldPassword,newPassword} = req.body;
     const _id = req.user.userId;
@@ -41,9 +42,9 @@ const changePassword = async (req,res) =>
     await User.findOneAndUpdate( {_id}, {password:hashedNewPassword} , {new:true, runValidators:true} );
     
     res.status(StatusCodes.OK).json({user:{msg: 'Password was changed suecessfully'}});
-}
+});
 
-const changeUsername = async (req,res) =>
+const changeUsername = asyncWrapper(async (req,res) =>
 {
     const {newUsername} = req.body;
     const _id = req.user.userId;
@@ -67,25 +68,20 @@ const changeUsername = async (req,res) =>
     await User.findOneAndUpdate( {_id}, {username:newUsername} , {new:true, runValidators:true} );
 
     res.status(StatusCodes.OK).json({user:{msg:'Username was updated suecessfully'}});
-}
+});
 
-const uploadPfp = async (req,res) =>
+const uploadPfp = asyncWrapper(async (req,res) =>
 {
     const file = req.files[0];
     const _id = req.user.userId;
-    try
-    {
-        const results = await s3Uploadv3(file);
 
-        await User.findOneAndUpdate({_id},{profilePicture:results}, {new:true, runValidators:true});
-        res.status(StatusCodes.OK).json({user:{msg:'Profile picture was uploaded suecessfully'}})
-    } 
-    catch (error)
-    {
-        console.log(error)
-    }
+    const results = await s3Uploadv3(file);
+
+    await User.findOneAndUpdate({_id},{profilePicture:results}, {new:true, runValidators:true});
+    res.status(StatusCodes.OK).json({user:{msg:'Profile picture was uploaded suecessfully'}})
+
     
-}
+});
 
 module.exports = 
 {

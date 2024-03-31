@@ -13,6 +13,7 @@ const rateLimiter = require('express-rate-limit');
 // routes
 const authRouter = require('./routes/auth');
 const credentialsRouter = require('./routes/credentials');
+const friendsRouter = require('./routes/friends');
 
 //middlewares
 const notFound = require('./middlewares/notFound');
@@ -51,6 +52,7 @@ app.get('/', (req,res) =>
 // routes
 app.use('/users',authRouter);
 app.use('/settings',authenticationMiddleware,credentialsRouter);
+app.use('/friends',authenticationMiddleware,friendsRouter);
 
 
 // error middlewares
