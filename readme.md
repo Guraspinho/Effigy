@@ -21,6 +21,7 @@ npm install && npm start
 1. Express
 2. mongoose
 3. @aws-sdk/client-s3
+4. AWS S3 bucket
 4. multer
 5. nodemailer
 6. jsonwebtoken
