@@ -105,7 +105,26 @@ const confirmRequest = asyncWrapper(async (req,res) =>
 
 const declineRequest = asyncWrapper(async (req,res) =>
 {
-    res.status(StatusCodes.OK).json({User:{msg:'Declined friend request'}});
+    const {userId} = req.user; 
+    const {id} = req.params;
+
+    const friend = await Friends.findOneAndDelete(
+        {
+            $and: 
+            [
+                { firstUserId: id },
+                { secondUserId: userId },
+                { status: 'pending' }
+            ]
+        }
+    );
+
+    if(!friend)
+    {
+        throw new NotFoundError(`No request found with ID: ${id}`);
+    }
+
+    res.status(StatusCodes.OK).json({User:{msg:'Friend request was deleted'}});
 });
 
 const deleteFriend = asyncWrapper(async (req,res) =>
