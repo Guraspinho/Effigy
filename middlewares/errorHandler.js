@@ -26,7 +26,7 @@ const errorHandlerMiddleware = (err, req, res, next) =>
     
     if(err.name == 'CastError')
     {
-        customError.msg = `No job with id: ${err.value}`
+        customError.msg = `${err.value} is not a valid ID`
         customError.statusCode = StatusCodes.NOT_FOUND;
     }
 

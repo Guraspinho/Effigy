@@ -80,8 +80,27 @@ const getFriendsList = async (req,res) =>
 // change status from pending to confirmed in status, i need two 
 const confirmRequest = asyncWrapper(async (req,res) =>
 {
-    const {id} = req.params
-    res.status(StatusCodes.OK).json({User:{msg:'Confirmed friend request'}});
+    const {userId} = req.user; 
+    const {id} = req.params;
+
+    const friend = await Friends.findOneAndUpdate(
+        {
+            $and: 
+            [
+                { firstUserId: id },
+                { secondUserId: userId },
+                { status: 'pending' }
+            ]
+        },
+        {status: 'confirmed'}
+    );
+ 
+    if(!friend)
+    {
+        throw new NotFoundError(`No request found with ID: ${id}`);
+    }
+    
+    res.status(StatusCodes.OK).json({friend});
 });
 
 const declineRequest = asyncWrapper(async (req,res) =>
