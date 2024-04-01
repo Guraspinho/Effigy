@@ -9,11 +9,26 @@ const asyncWrapper = require('../middlewares/asyncWrapper');
 // send a friend request
 const sendRequest = asyncWrapper(async (req,res) =>
 {
-    const {email} = req.body;
+    const {email} = req.body; // the one that recives request
     const {userId} = req.user; // the one that sends request
-
-    const credentials = await User.findOne({email}); // the one that recives request
     
+    // for restricting number of friends for each user
+    const friendsCount = await Friends.find(
+        {
+            $or:
+            [
+                {firstUserId:userId},
+                {secondUserId:userId}
+            ]
+        });
+
+    // max number of friends is 150
+    if(friendsCount.length === 150)
+    {
+        throw new BadRequestError('You have already reached maximum number of friends');
+    }
+
+    const credentials = await User.findOne({email}); 
 
     // Check if user with such email exists or not
     if(credentials === null)
@@ -97,7 +112,8 @@ const confirmRequest = asyncWrapper(async (req,res) =>
         },
         {status: 'confirmed'}
     );
- 
+        
+    // check wether that request exists or not
     if(!friend)
     {
         throw new NotFoundError(`No request found with ID: ${id}`);
@@ -123,6 +139,7 @@ const declineRequest = asyncWrapper(async (req,res) =>
         }
     );
 
+    // check wether that request exists or not
     if(!friend)
     {
         throw new NotFoundError(`No request found with ID: ${id}`);
@@ -151,6 +168,7 @@ const deleteFriend = asyncWrapper(async (req,res) =>
         ]
     });
 
+    // check wether you are friends with that person or not
     if(!friend)
     {
         throw new BadRequestError('You guys are not friends');
