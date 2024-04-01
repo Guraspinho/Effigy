@@ -6,6 +6,7 @@ const asyncWrapper = require('../middlewares/asyncWrapper');
 
 // send friend request, confirm friend request, decline request  delete from friends list, get all friends list, see all requests
 
+// send a friend request
 const sendRequest = asyncWrapper(async (req,res) =>
 {
     const {email} = req.body;
@@ -47,6 +48,7 @@ const sendRequest = asyncWrapper(async (req,res) =>
     res.status(StatusCodes.OK).json({User:{msg:'Friend request was send suecessfully'}});
 });
 
+// get all friend requests
 const getRequests = async (req,res) =>
 {
     const {userId} = req.user; 
@@ -62,6 +64,7 @@ const getRequests = async (req,res) =>
     res.status(StatusCodes.OK).json({requestsList});
 }
 
+// get all friends
 const getFriendsList = async (req,res) =>
 {
     const {userId} = req.user; 
@@ -77,7 +80,7 @@ const getFriendsList = async (req,res) =>
     res.status(StatusCodes.OK).json({friendsList});
 }
 
-// change status from pending to confirmed in status, i need two 
+// confirm friend request
 const confirmRequest = asyncWrapper(async (req,res) =>
 {
     const {userId} = req.user; 
@@ -103,6 +106,7 @@ const confirmRequest = asyncWrapper(async (req,res) =>
     res.status(StatusCodes.OK).json({friend});
 });
 
+// delete friend request
 const declineRequest = asyncWrapper(async (req,res) =>
 {
     const {userId} = req.user; 
@@ -127,8 +131,31 @@ const declineRequest = asyncWrapper(async (req,res) =>
     res.status(StatusCodes.OK).json({User:{msg:'Friend request was deleted'}});
 });
 
+// delete a friend
 const deleteFriend = asyncWrapper(async (req,res) =>
 {
+    const {userId} = req.user; 
+    const {id} = req.params;
+
+    const friend = await Friends.findOneAndDelete({
+        $and:
+        [
+            {
+                $or:
+                [
+                    { firstUserId: userId, secondUserId: id },
+                    { firstUserId: id, secondUserId: userId }
+                ]
+            },
+            { status: 'confirmed' }
+        ]
+    });
+
+    if(!friend)
+    {
+        throw new BadRequestError('You guys are not friends');
+    }
+
     res.status(StatusCodes.OK).json({User:{msg:'A Friend was deleted suecessfully'}});
 });
 
