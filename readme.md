@@ -14,6 +14,7 @@ npm install && npm start
 5. Custom error handler classes
 6. validators (mongoose, custom)
 7. security (using jwt, bycriptjs and etc.)
+8. Send, decline, confirm, get a list friend requests, get added friends list, delete friends.
 
 
 ### Used technologies
