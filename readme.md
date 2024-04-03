@@ -5,16 +5,21 @@
 ```bash
 npm install && npm start
 ```
-#### Key features
+#### Key functionality
 
 1. User login/signup
 2. Email verification
-3. Edit credentials (password,username and etc.)
+3. Edit user credentials (password, username and etc.)
 4. File upload (upload profile pictures on AWS S3 bucket) using SDKv3
-5. Custom error handler classes
-6. validators (mongoose, custom)
-7. security (using jwt, bycriptjs and etc.)
-8. Send, decline, confirm, get a list friend requests, get added friends list, delete friends.
+5. Send, decline, confirm friend requests, get a list of requests, get a friends list, delete friends.
+
+
+#### Features
+
+1. Custom error handler classes
+2. validators (mongoose, custom)
+3. security (JWT, bycriptjs and etc.)
+4. Async wrapper (to avoid using trycatch in every controller)
 
 
 ### Used technologies
@@ -26,7 +31,7 @@ npm install && npm start
 4. multer
 5. nodemailer
 6. jsonwebtoken
-etc.
+and etc.
 
 #### Database Connection
 

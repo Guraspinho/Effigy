@@ -5,15 +5,18 @@ const connectDB = require('./db/mongo');
 require('dotenv').config();
 require('express-async-errors');
 
+// import security packages
 const cors = require('cors');
 const helmet = require('helmet');
 const xssClean = require('xss-clean');
 const rateLimiter = require('express-rate-limit');
 
-// routes
+// import routes
 const authRouter = require('./routes/auth');
 const credentialsRouter = require('./routes/credentials');
 const friendsRouter = require('./routes/friends');
+const postsRouter = require('./routes/posts');
+const commentsRouter = require('./routes/comments');
 
 //middlewares
 const notFound = require('./middlewares/notFound');
@@ -53,6 +56,8 @@ app.get('/', (req,res) =>
 app.use('/users',authRouter);
 app.use('/settings',authenticationMiddleware,credentialsRouter);
 app.use('/friends',authenticationMiddleware,friendsRouter);
+app.use('/posts',postsRouter);
+app.use('/comments',commentsRouter);
 
 
 // error middlewares
