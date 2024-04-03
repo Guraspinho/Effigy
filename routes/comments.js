@@ -10,7 +10,7 @@ const router = express.Router();
 
 
 router.route('/add').post(addComment);
-router.route('/edit').post(editComment);
+router.route('/edit').put(editComment);
 router.route('/delete').delete(deleteComment);
 
 

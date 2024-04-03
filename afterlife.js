@@ -56,8 +56,8 @@ app.get('/', (req,res) =>
 app.use('/users',authRouter);
 app.use('/settings',authenticationMiddleware,credentialsRouter);
 app.use('/friends',authenticationMiddleware,friendsRouter);
-app.use('/posts',postsRouter);
-app.use('/comments',commentsRouter);
+app.use('/posts',authenticationMiddleware,postsRouter);
+app.use('/comments',authenticationMiddleware,commentsRouter);
 
 
 // error middlewares
