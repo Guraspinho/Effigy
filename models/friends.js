@@ -22,6 +22,7 @@ const friendsSchema = mongoose.Schema(
         }
 
 
-    }, {timestamps:true});
+    },
+    {timestamps:true});
 
 module.exports = mongoose.model('Friends',friendsSchema);
