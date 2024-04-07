@@ -5,11 +5,12 @@ const commentsSchema = mongoose.Schema(
         body:
         {
             type: String,
-            maxlength: 512
+            maxlength: 512,
+            required: true
         },
         postId:
         {
-            ref: 'Posts',
+            ref: 'Post',
             type: mongoose.Types.ObjectId,
             required: true
         },

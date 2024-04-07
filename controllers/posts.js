@@ -50,7 +50,7 @@ const editPost = asyncWrapper( async (req,res) =>
     // update a post based on provided properties
     const post = await Post.findOneAndUpdate({_id,createdBy},{title,visibility}, {new: true, runValidators: true});
 
-    // check if a post with such id exists or not
+    // check if a post with such id exists or not   
     if(!post)
     {
         throw new NotFoundError('A post with such id does not exist');

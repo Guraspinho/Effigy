@@ -9,9 +9,9 @@ const {
 const router = express.Router();
 
 
-router.route('/add').post(addComment);
-router.route('/edit').put(editComment);
-router.route('/delete').delete(deleteComment);
+router.route('/add/:id').post(addComment);
+router.route('/edit/:id').put(editComment);
+router.route('/delete/:id').delete(deleteComment);
 
 
 module.exports = router;
