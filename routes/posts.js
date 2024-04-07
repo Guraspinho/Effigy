@@ -3,18 +3,17 @@ const {
     addPost,
     editPost,
     deletePost,
-    addLike,
-    removeLike
+    like,
 } = require('../controllers/posts');
 
 const router = express.Router();
 
 
 router.route('/add').post(addPost);
-router.route('/edit').patch(editPost);
-router.route('/delete').delete(deletePost);
-router.route('/like').put(addLike);
-router.route('/removelike').put(removeLike);
+router.route('/edit/:id').patch(editPost);
+router.route('/delete/:id').delete(deletePost);
+router.route('/like/:id').put(like);
+
 
 
 module.exports = router;

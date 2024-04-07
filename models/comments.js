@@ -9,11 +9,13 @@ const commentsSchema = mongoose.Schema(
         },
         postId:
         {
+            ref: 'Posts',
             type: mongoose.Types.ObjectId,
             required: true
         },
         createdBy:
         {
+            ref: 'User',
             type: mongoose.Types.ObjectId,
             required: true
         }

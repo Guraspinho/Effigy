@@ -10,14 +10,14 @@ const Postschema = mongoose.Schema(
         },
         photoUrl:
         {
-            type: String,
-            required: [true,'Posts must include photos']
+            type: String
+            // required: [true,'Posts must include photos']
         },
         visibility:
         {
             type: String,
             enum: ['only me','friends','public'],
-            required: [true, 'A post must have visability status']
+            required: [true, 'A post must have visibility status']
         },
         likes:
         {
